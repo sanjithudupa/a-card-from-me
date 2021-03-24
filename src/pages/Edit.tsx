@@ -79,25 +79,26 @@ function App() {
     // if(user) {
       return (
         <div>
-          <h1>{id}</h1>
-
           {
             card.id != "NULL_ID" ?
 
               <div>
-                <h2>
-                  {card.displayName}
-                </h2> 
+
+                <div style={{position: "absolute", zIndex: 1}}>
+                  <h2>
+                    {card.displayName}
+                  </h2> 
+                </div>
                 
                 <Editor objects={card.objects}/>
               </div>
               :
 
-              <div>
+              <div style={{textAlign: "center"}}>
                 <h1>Loading Editor...</h1>
                 <img src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif"></img>
                 <p>
-                  If you think error has ocurred, please try signing in again.
+                  If the editor does not load for some time, you might not own this card or you might not be signed in.
                 </p>
 
                 <Link to="/">Return to Home</Link>
