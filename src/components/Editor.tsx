@@ -14,6 +14,8 @@ import { useHistory } from 'react-router-dom';
 import CardSchema from '../schema/card';
 
 import Transition from "./Transition"
+import truncate from "../util/truncate";
+import { convertCompilerOptionsFromJson } from 'typescript';
 
 extend({ OrbitControls })
 
@@ -66,11 +68,12 @@ const Scene: React.FC<{objects: ARObject[]}> = ({objects}) => {
 
         <Suspense fallback={null}>
             {objects.map((object, i) => {
-                {
+                { 
+                    console.log(object.rotation)
                     return object.type == "text" ?
-                    <Text text={object.value} color="black" key={i}></Text>
+                    <Text text={object.value} color="black" key={i} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} position={[object.position.x, object.position.z, object.position.y]}></Text>
                     :
-                    <Image key={i} rotation={[object.rotation.x, object.rotation.y, object.rotation.z]} src={object.value} position={[object.position.x, object.position.z + 5, object.position.y]}></Image>
+                    <Image key={i} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} src={object.value} position={[object.position.x, object.position.z, object.position.y]}></Image>
                 }
             })}
 
@@ -89,6 +92,7 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
 
     const [card, setCard] = useState<CardSchema>(passedCard)
     const [openCancel, setOpenCancel] = React.useState(false);
+    // const [selectedObject, setSelectedObject] = useState(card.objects[0])
 
     const handleClickOpenCancel = () => {
         setOpenCancel(true);
@@ -108,7 +112,7 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
         setOpenAdd(false);
     };
 
-    const [selectedIndex, setSelectedIndex] = React.useState(1);
+    const [selectedIndex, setSelectedIndex] = React.useState(0);
 
     const [type, setType] = React.useState('text');
 
@@ -120,6 +124,16 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
 
     const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue((event.target as HTMLInputElement).value);
+    };
+
+    const handlePosRotChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const element = event.target as HTMLInputElement;
+
+      let newCard = Object.assign({}, card);
+
+      newCard.objects[selectedIndex][element.id.charAt(0) == "p" ? "position" : "rotation"][element.id.slice(-1) as "x" | "y" | "z"] = +element.value
+
+      setCard(newCard);
     };
 
     useEffect(() => {
@@ -146,9 +160,9 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
             type: type,
             value: value,
             position: {
-                x: 0,
-                y: 0,
-                z: 0
+                x: Math.random() * 2,
+                y: Math.random() * 2,
+                z: Math.random() * 2
             },
             rotation: {
                 x: 0,
@@ -202,8 +216,8 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
           {card.objects.map((object, index) => (
             <ListItem
                 button
-                selected={selectedIndex === 0}
-                onClick={(event) => handleElementClick(event, 0)}
+                selected={selectedIndex === index}
+                onClick={(event) => handleElementClick(event, index)}
                 key={index}
             >
                 <ListItemIcon>
@@ -212,7 +226,9 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
                         <ImageIcon></ImageIcon>
                     }
                 </ListItemIcon>
-                <ListItemText primary={object.value} />
+                <ListItemText disableTypography primary={
+                  <Typography variant="body2" style={{ textOverflow: "ellipsis" }}>{truncate(object.value, 15)}</Typography>
+                } />
             </ListItem>
           ))}
         </List>
@@ -225,41 +241,44 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
 
         <Divider />
         
-        <Typography variant="subtitle1" noWrap style={{textAlign: "center", margin: 15 }}>
-            Object: {card.objects[selectedIndex-1].value}
+        <Typography variant="subtitle1" style={{textAlign: "center", margin: 15, textOverflow: "ellipses" }}>
+            Editing: <strong>{truncate(card.objects[selectedIndex].value, 15)}</strong>
         </Typography>
         
-        <Typography variant="caption" noWrap style={{textAlign: "center", marginTop: 10}}>
+        <Typography variant="caption" style={{textAlign: "center", marginTop: 10}}>
             Position
         </Typography>
 
         <div style={{margin: 15, marginTop: 0, display: 'flex', flexDirection: 'row', padding: 5}}>
             <TextField
-                autoFocus
                 margin="dense"
                 label="X"
                 fullWidth
-                variant="outlined"
-                // value={value}
-                // onChange={handleValueChange}
+                variant="filled"
+                type="number"
+                id="px"
+                value={card.objects[selectedIndex].position.x}
+                onChange={handlePosRotChange}
             />
             <TextField
-                autoFocus
                 margin="dense"
                 label="Y"
                 fullWidth
-                variant="outlined"
-                // value={value}
-                // onChange={handleValueChange}
+                variant="filled"
+                type="number"
+                id="py"
+                value={card.objects[selectedIndex].position.y}
+                onChange={handlePosRotChange}
             />
             <TextField
-                autoFocus
                 margin="dense"
                 label="Z"
                 fullWidth
-                variant="outlined"
-                // value={value}
-                // onChange={handleValueChange}
+                variant="filled"
+                type="number"
+                id="pz"
+                value={card.objects[selectedIndex].position.z}
+                onChange={handlePosRotChange}
             />
 
         </div>
@@ -270,31 +289,34 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
 
         <div style={{margin: 15, marginTop: 0, display: 'flex', flexDirection: 'row', padding: 5}}>
             <TextField
-                autoFocus
                 margin="dense"
                 label="X"
                 fullWidth
-                variant="outlined"
-                // value={value}
-                // onChange={handleValueChange}
+                variant="filled"
+                type="number"
+                id="rx"
+                value={card.objects[selectedIndex].rotation.x}
+                onChange={handlePosRotChange}
             />
             <TextField
-                autoFocus
                 margin="dense"
                 label="Y"
                 fullWidth
-                variant="outlined"
-                // value={value}
-                // onChange={handleValueChange}
+                variant="filled"
+                type="number"
+                id="ry"
+                value={card.objects[selectedIndex].rotation.y}
+                onChange={handlePosRotChange}
             />
             <TextField
-                autoFocus
                 margin="dense"
                 label="Z"
                 fullWidth
-                variant="outlined"
-                // value={value}
-                // onChange={handleValueChange}
+                variant="filled"
+                type="number"
+                id="rz"
+                value={card.objects[selectedIndex].rotation.z}
+                onChange={handlePosRotChange}
             />
 
         </div>
