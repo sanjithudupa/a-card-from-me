@@ -7,7 +7,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Image from "./Image";
 import Text from "./Text";
 import ARObject from '../schema/arobject';
-import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
+import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@material-ui/core';
 
 import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon } from "@material-ui/icons"
 import { useHistory } from 'react-router-dom';
@@ -98,7 +98,29 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
         setOpenCancel(false);
     };
 
+    const [openAdd, setOpenAdd] = React.useState(false);
+
+    const handleClickOpenAdd = () => {
+        setOpenAdd(true);
+    };
+
+    const handleCloseAdd = () => {
+        setOpenAdd(false);
+    };
+
     const [selectedIndex, setSelectedIndex] = React.useState(1);
+
+    const [type, setType] = React.useState('text');
+
+    const handleTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setType((event.target as HTMLInputElement).value);
+    };
+
+    const [value, setValue] = React.useState('');
+
+    const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValue((event.target as HTMLInputElement).value);
+    };
 
     useEffect(() => {
         // setHeight(window.innerHeight);
@@ -117,6 +139,26 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
     ) => {
         setSelectedIndex(index);
     };
+
+    const addObject = () => {
+        let newCard = Object.assign({}, card);
+        newCard.objects.push({
+            type: type,
+            value: value,
+            position: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+        });
+
+        setCard(newCard);
+    }
 
     return (
         <div className={classes.root}>
@@ -174,14 +216,98 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
             </ListItem>
           ))}
         </List>
+        
+        <Button variant="contained" color="default" style={{margin: 15}} onClick={handleClickOpenAdd}>
+            Add an Object
+        </Button>
+
+        <br/>
+
         <Divider />
-            <Button variant="contained" color="secondary" style={{margin: 15}}>
-                Save
-            </Button>
+        
+        <Typography variant="subtitle1" noWrap style={{textAlign: "center", margin: 15 }}>
+            Object: {card.objects[selectedIndex-1].value}
+        </Typography>
+        
+        <Typography variant="caption" noWrap style={{textAlign: "center", marginTop: 10}}>
+            Position
+        </Typography>
+
+        <div style={{margin: 15, marginTop: 0, display: 'flex', flexDirection: 'row', padding: 5}}>
+            <TextField
+                autoFocus
+                margin="dense"
+                label="X"
+                fullWidth
+                variant="outlined"
+                // value={value}
+                // onChange={handleValueChange}
+            />
+            <TextField
+                autoFocus
+                margin="dense"
+                label="Y"
+                fullWidth
+                variant="outlined"
+                // value={value}
+                // onChange={handleValueChange}
+            />
+            <TextField
+                autoFocus
+                margin="dense"
+                label="Z"
+                fullWidth
+                variant="outlined"
+                // value={value}
+                // onChange={handleValueChange}
+            />
+
+        </div>
+
+        <Typography variant="caption" noWrap style={{textAlign: "center", marginTop: 10}}>
+            Rotation
+        </Typography>
+
+        <div style={{margin: 15, marginTop: 0, display: 'flex', flexDirection: 'row', padding: 5}}>
+            <TextField
+                autoFocus
+                margin="dense"
+                label="X"
+                fullWidth
+                variant="outlined"
+                // value={value}
+                // onChange={handleValueChange}
+            />
+            <TextField
+                autoFocus
+                margin="dense"
+                label="Y"
+                fullWidth
+                variant="outlined"
+                // value={value}
+                // onChange={handleValueChange}
+            />
+            <TextField
+                autoFocus
+                margin="dense"
+                label="Z"
+                fullWidth
+                variant="outlined"
+                // value={value}
+                // onChange={handleValueChange}
+            />
+
+        </div>
+
+        <Divider />
+
+        <Button variant="contained" color="secondary" style={{margin: 15}}>
+            Save
+        </Button>
       </Drawer>
 
 
-                    {/* close dialog */}
+    {/* close dialog */}
       <Dialog
         open={openCancel}
         TransitionComponent={Transition}
@@ -205,6 +331,47 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
               setTimeout(() => history.push("/dashboard"), 500)            
           }} color="secondary">
             Exit
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* add dialog */}
+
+      <Dialog open={openAdd} onClose={handleCloseAdd} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
+        <DialogTitle id="form-dialog-title">Add an Object</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To create an element, first choose what <strong>type</strong> of object you want(text or image), then specify the respective value (image address or text).
+          </DialogContentText>
+
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Type</FormLabel>
+            <RadioGroup aria-label="gender" name="type" value={type} onChange={handleTypeChange}>
+                <FormControlLabel value="image" control={<Radio />} label="Image" />
+                <FormControlLabel value="text" control={<Radio />} label="Text" />
+            </RadioGroup>
+        </FormControl>
+
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Value"
+            fullWidth
+            value={value}
+            onChange={handleValueChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAdd} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => {
+              addObject();
+              setValue("");
+              setType("");
+              handleCloseAdd();
+          }} color="primary">
+            Add
           </Button>
         </DialogActions>
       </Dialog>
