@@ -83,14 +83,7 @@ function App() {
             card.id != "NULL_ID" ?
 
               <div>
-
-                <div style={{position: "absolute", zIndex: 1}}>
-                  <h2>
-                    {card.displayName}
-                  </h2> 
-                </div>
-                
-                <Editor objects={card.objects}/>
+                <Editor passedCard={card} />
               </div>
               :
 
