@@ -14,7 +14,7 @@ interface TextProps extends MeshProps {
   updatePosition: (key: number, x: number, y: number, z: number) => void;
   updateRotation: (key: number, x: number, y: number, z: number) => void;
   idx: number,
-  mode: string
+  mode: string,
 }
 
 const Text: React.FC<TextProps> = (textProps) => {
@@ -26,15 +26,20 @@ const Text: React.FC<TextProps> = (textProps) => {
   
   const { text, color, orbit, updatePosition, updateRotation, idx, mode, ...meshProps} = textProps;
   
+  let deleted = false;
+
   useEffect(() => {
+      if(!meshRef.current)
+        alert("no mesh ref")
+      
       if (!transformControl && meshRef.current) {
           let transformC = new TransformControls(camera, gl.domElement);
           transformC.attach(meshRef.current);
 
-          
+          // updateReferences(idx, scene, transformC);
+
           scene.add(transformC);
           setTControl(transformC);
-
       }
 
       const callback = (event: any) => {
@@ -56,6 +61,8 @@ const Text: React.FC<TextProps> = (textProps) => {
 
       return () =>  {
         transformControl?.removeEventListener("dragging-changed", callback)
+        if(!meshRef.current && transformControl)
+          scene.remove(transformControl)
       }
       // return () => {
       //     if (transformControl) {

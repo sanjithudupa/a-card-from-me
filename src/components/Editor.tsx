@@ -7,16 +7,18 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Image from "./Image";
 import Text from "./Text";
 import ARObject from '../schema/arobject';
-import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@material-ui/core';
+import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction } from '@material-ui/core';
 
-import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon } from "@material-ui/icons"
+import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon, Edit as EditIcon } from "@material-ui/icons"
 import { useHistory } from 'react-router-dom';
 import CardSchema from '../schema/card';
 
 import Transition from "./Transition"
 import truncate from "../util/truncate";
+import randome from "../util/random"
 
 import ViewObject from "./Object";
+import getRandomInt from '../util/random';
 
 const radToDeg = 180/Math.PI;
 
@@ -145,6 +147,36 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
     const handleCloseAdd = () => {
         setOpenAdd(false);
     };
+
+    const [openEdit, setOpenEdit] = React.useState(false);
+    const handleClickOpenEdit = () => {
+        setRenameValue(card.objects[selectedIndex].value)
+        setOpenEdit(true);
+    };
+
+    const handleCloseEdit = () => {
+        setOpenEdit(false);
+    };
+
+    const [renameValue, setRenameValue] = React.useState('');
+
+    const handleRename = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRenameValue((event.target as HTMLInputElement).value);
+    };
+
+    const renameObject = () => {
+      let newCard = Object.assign({}, card);
+
+      newCard.objects[selectedIndex].value = renameValue;
+      setCard(newCard);
+    };
+    
+    const updateReferences = (key: number, scene: THREE.Scene, controls: THREE.Object3D) => {
+      let newCard = Object.assign({}, card);
+
+      newCard.objects[selectedIndex].references = {scene: scene, controls: controls}
+      setCard(newCard);
+    }
 
     const [selectedIndex, setSelectedIndex] = React.useState(0);
 
@@ -277,6 +309,14 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
                 <ListItemText disableTypography primary={
                   <Typography variant="body2" style={{ textOverflow: "ellipsis" }}>{truncate(object.value, 15)}</Typography>
                 } />
+                {
+                  selectedIndex == index &&
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="edit" onClick={handleClickOpenEdit}>
+                      <EditIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>                  
+                }
             </ListItem>
           ))}
         </List>
@@ -442,6 +482,54 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
               handleCloseAdd();
           }} color="primary">
             Add
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit dialog */}
+
+      <Dialog open={openEdit} onClose={handleCloseEdit} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
+        <DialogTitle id="form-dialog-title">Edit: <strong>{card.objects[selectedIndex].value}</strong></DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Choose to either change the <strong>value</strong> of the object or <strong>delete</strong> it. 
+          </DialogContentText>
+
+
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Update Value"
+            fullWidth
+            value={renameValue}
+            onChange={handleRename}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEdit} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => {
+            if(card.objects.length > 1) {
+              let oldIndex = selectedIndex;
+
+              setSelectedIndex(oldIndex > 0 ? oldIndex - 1 : oldIndex + 1);
+
+              card.objects.splice(oldIndex, 1);
+              handleCloseEdit();
+            } else {
+              alert("Could not delete - You must have at least one object")
+            }
+          }} color="secondary">
+            Delete
+          </Button>
+          <Button onClick={() => {
+              renameObject();
+              // setValue("");
+              // setType("");
+              handleCloseEdit();
+          }} color="primary">
+            Update Value
           </Button>
         </DialogActions>
       </Dialog>
