@@ -4,8 +4,10 @@ import * as THREE from 'three';
 import { Sky, TransformControls } from "@react-three/drei";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
-import Image from "./Image";
-import Text from "./Text";
+import Image from "./CanvasImage";
+import Text from "./CanvasText";
+import FlatImage from "./Image";
+
 import ARObject from '../schema/arobject';
 import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction } from '@material-ui/core';
 
@@ -17,7 +19,6 @@ import Transition from "./Transition"
 import truncate from "../util/truncate";
 import randome from "../util/random"
 
-import ViewObject from "./Object";
 import getRandomInt from '../util/random';
 
 const radToDeg = 180/Math.PI;
@@ -103,11 +104,12 @@ const Scene: React.FC<{objects: ARObject[], updatePosition: (key: number, x: num
                 if(object.type == "text")
                     obj = <Text text={object.value} color="black" orbit={orbit} updatePosition={updatePosition} updateRotation={updateRotation} key={i} idx={i} mode={mode} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} position={[object.position.x, object.position.z, object.position.y]}></Text>
                 else
-                    obj = <Image key={i} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} src={object.value} position={[object.position.x, object.position.z, object.position.y]}></Image>
+                    obj = <Image orbit={orbit} updatePosition={updatePosition} updateRotation={updateRotation} key={i} idx={i} mode={mode} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} src={object.value} position={[object.position.x, object.position.z, object.position.y]}></Image>
                 
                 return (
                   <>
                     {obj}
+                    <FlatImage key={i} rotation={[Math.PI/2, 0, 0]} src={"https://i.kym-cdn.com/photos/images/facebook/000/352/246/937.png"} position={[0, 0, 0]}></FlatImage>
                   </>
                 )
               }

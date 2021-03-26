@@ -4,7 +4,7 @@ import targetFile from './assets/example-tracking-image.zpt'
 import { MeshProps, useLoader } from 'react-three-fiber'
 
 import Image from "../components/Image"
-import Text from "../components/Text"
+import Text from "../components/CanvasText"
 
 import * as THREE from 'three';
 import Font from "./assets/font.json";
