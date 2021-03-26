@@ -3,10 +3,14 @@ import { Canvas, useThree, extend } from 'react-three-fiber'
 import * as THREE from 'three';
 import { Sky, TransformControls } from "@react-three/drei";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+//@ts-ignore
+import QRCode from "qrcode-react";
 
 import Image from "./CanvasImage";
 import Text from "./CanvasText";
 import FlatImage from "./Image";
+
+import logo from "../assets/card_logo.png"
 
 import ARObject from '../schema/arobject';
 import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction, Snackbar } from '@material-ui/core';
@@ -18,8 +22,10 @@ import CardSchema from '../schema/card';
 import Transition from "./Transition"
 import truncate from "../util/truncate";
 import getRandomInt from '../util/random';
+import sleep from "../util/sleep";
 
 import Constants from "../constants";
+import { delay } from 'lodash';
 
 const radToDeg = 180/Math.PI;
 
@@ -208,6 +214,8 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
 
     const [value, setValue] = React.useState('');
 
+    const [codeReady, setCodeReady] = React.useState(false);
+
     const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue((event.target as HTMLInputElement).value);
     };
@@ -222,10 +230,10 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
       setCard(newCard);
     };
 
-    const savePressed = () => {
+    const savePressed = async() => {
       handleCloseSave();
       handleClickOpenView();
-      console.log(saveCard(card));
+      setCodeReady(true);
     }
 
     const updatePosition = (key: number, x: number, y: number, z: number) => {
@@ -592,8 +600,10 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
       {/* View Dialog */}
       <Dialog open={openView} onClose={handleCloseView} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
         <DialogTitle id="form-dialog-title">Print: "<strong>{card.displayName}</strong>"</DialogTitle>
-        <DialogContent>
-          <img src="https://i.kym-cdn.com/photos/images/facebook/000/352/246/937.png" />
+        <DialogContent style={{textAlign: "center"}}>
+          {
+            <QRCode value={"http://" + Constants.HOSTNAME + "/" + card.id} size={230} logo={logo} logoWidth={200} />
+          }
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseView} color="primary">
