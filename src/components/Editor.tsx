@@ -123,7 +123,7 @@ const Scene: React.FC<{objects: ARObject[], updatePosition: (key: number, x: num
     )
 }
 
-const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
+const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => void}> = ({passedCard, saveCard}) => {
     const classes = useStyles();
     const history = useHistory();
     // const [height, setHeight] = useState(773);
@@ -158,6 +158,24 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
 
     const handleCloseEdit = () => {
         setOpenEdit(false);
+    };
+
+    const [openSave, setOpenSave] = React.useState(false);
+    const handleClickOpenSave = () => {
+        setOpenSave(true);
+    };
+
+    const handleCloseSave = () => {
+        setOpenSave(false);
+    };
+
+    const [openView, setOpenView] = React.useState(false);
+    const handleClickOpenView = () => {
+        setOpenView(true);
+    };
+
+    const handleCloseView = () => {
+        setOpenView(false);
     };
 
     const [renameValue, setRenameValue] = React.useState('');
@@ -205,7 +223,9 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
     };
 
     const savePressed = () => {
-      
+      handleCloseSave();
+      handleClickOpenView();
+      console.log(saveCard(card));
     }
 
     const updatePosition = (key: number, x: number, y: number, z: number) => {
@@ -428,7 +448,7 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
 
         <Divider />
 
-        <Button variant="contained" color="secondary" style={{margin: 15}} onClick={savePressed}>
+        <Button variant="contained" color="secondary" style={{margin: 15}} onClick={handleClickOpenSave}>
             Save
         </Button>
       </Drawer>
@@ -547,6 +567,37 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
               handleCloseEdit();
           }} color="primary">
             Update Value
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Save Dialog */}
+      <Dialog open={openSave} onClose={handleCloseSave} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
+        <DialogTitle id="form-dialog-title">Save project?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you would like to save? <strong>This will overwrite your previous version.</strong>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseSave} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={savePressed} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* View Dialog */}
+      <Dialog open={openView} onClose={handleCloseView} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
+        <DialogTitle id="form-dialog-title">Print: "<strong>{card.displayName}</strong>"</DialogTitle>
+        <DialogContent>
+          <img src="https://i.kym-cdn.com/photos/images/facebook/000/352/246/937.png" />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseView} color="primary">
+            Okay
           </Button>
         </DialogActions>
       </Dialog>

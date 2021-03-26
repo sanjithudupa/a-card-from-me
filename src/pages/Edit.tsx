@@ -27,6 +27,13 @@ function App() {
       id: "NULL_ID"
     });
 
+    async function saveCard(card: CardSchema) {
+      await db.collection("cards").doc(id).set(
+        card,
+        {merge: true}
+      );
+    }
+
     async function fetchData(user: firebase.User) {
       console.trace("hi")
       const data = await db.collection("cards")
@@ -40,7 +47,8 @@ function App() {
           return;
 
         card_tmp = obj.data() as CardSchema;
-
+        // card_tmp.id = id;
+        
         count++;
       });
       if (card_tmp)
@@ -84,7 +92,7 @@ function App() {
             card.id != "NULL_ID" ?
 
               <div>
-                <Editor passedCard={card} />
+                <Editor passedCard={card} saveCard={saveCard} />
               </div>
               :
 
