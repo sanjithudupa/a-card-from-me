@@ -7,6 +7,7 @@ import Editor from "../components/Editor";
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import { CircularProgress } from '@material-ui/core';
 
 function App() {
     const { id } = useParams<{id: string}>();
@@ -89,7 +90,7 @@ function App() {
 
               <div style={{textAlign: "center"}}>
                 <h1>Loading Editor...</h1>
-                <img src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif"></img>
+                <CircularProgress />
                 <p>
                   If the editor does not load for some time, you might not own this card or you might not be signed in.
                 </p>

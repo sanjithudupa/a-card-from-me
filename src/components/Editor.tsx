@@ -9,7 +9,7 @@ import Text from "./CanvasText";
 import FlatImage from "./Image";
 
 import ARObject from '../schema/arobject';
-import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction } from '@material-ui/core';
+import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction, Snackbar } from '@material-ui/core';
 
 import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon, Edit as EditIcon } from "@material-ui/icons"
 import { useHistory } from 'react-router-dom';
@@ -17,9 +17,9 @@ import CardSchema from '../schema/card';
 
 import Transition from "./Transition"
 import truncate from "../util/truncate";
-import randome from "../util/random"
-
 import getRandomInt from '../util/random';
+
+import Constants from "../constants";
 
 const radToDeg = 180/Math.PI;
 
@@ -204,18 +204,30 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
       setCard(newCard);
     };
 
+    const savePressed = () => {
+      
+    }
+
     const updatePosition = (key: number, x: number, y: number, z: number) => {
       let newCard = Object.assign({}, card);
 
-      newCard.objects[key].position = {x: x, y: z, z: y}
+      newCard.objects[key].position = {x: +x.toFixed(3), y: +z.toFixed(3), z: +y.toFixed(3)}
       setCard(newCard);
     }
 
     const updateRotation = (key: number, x: number, y: number, z: number) => {
       let newCard = Object.assign({}, card);
 
-      newCard.objects[key].rotation = {x: x * radToDeg, y: z * radToDeg, z: y * radToDeg}
+      newCard.objects[key].rotation = {x: +(x * radToDeg).toFixed(3), y: +(z * radToDeg).toFixed(3), z: +(y * radToDeg).toFixed(3)}
       setCard(newCard);
+    }
+
+    const [snackbar, setSnackbar] = useState(false);
+    const [snackbarText, setSnackbarText] = useState("text");
+
+    const openSnackbar = (text: string) => {
+      setSnackbarText(text)
+      setSnackbar(true)
     }
 
     useEffect(() => {
@@ -237,14 +249,17 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
     };
 
     const addObject = () => {
+        if(card.objects.length >= Constants.MAX_OBJECTS)
+          return openSnackbar(`Sorry - scenes can have a maximum of ${Constants.MAX_OBJECTS} objects.`)
+
         let newCard = Object.assign({}, card);
         newCard.objects.push({
             type: type,
             value: value,
             position: {
-                x: Math.random() * 2,
-                y: Math.random() * 2,
-                z: Math.random() * 2
+                x: +(Math.random() * 2).toFixed(3),
+                y: +(Math.random() * 2).toFixed(3),
+                z: +(Math.random() * 2).toFixed(3)
             },
             rotation: {
                 x: 0,
@@ -413,7 +428,7 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
 
         <Divider />
 
-        <Button variant="contained" color="secondary" style={{margin: 15}}>
+        <Button variant="contained" color="secondary" style={{margin: 15}} onClick={savePressed}>
             Save
         </Button>
       </Drawer>
@@ -520,7 +535,7 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
               card.objects.splice(oldIndex, 1);
               handleCloseEdit();
             } else {
-              alert("Could not delete - You must have at least one object")
+              openSnackbar("Could not delete - need at least one object.")
             }
           }} color="secondary">
             Delete
@@ -535,6 +550,14 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Snackbars */}
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={snackbar}
+        onClose={() => setSnackbar(false)}
+        message={snackbarText}
+      />
     </div>
         // <div>
         //     {/* options */}
