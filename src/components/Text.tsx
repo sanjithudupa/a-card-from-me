@@ -11,6 +11,10 @@ interface TextProps extends MeshProps {
   text: string; 
   color?: string;
   orbit: any;
+  updatePosition: (key: number, x: number, y: number, z: number) => void;
+  updateRotation: (key: number, x: number, y: number, z: number) => void;
+  idx: number,
+  mode: string
 }
 
 const Text: React.FC<TextProps> = (textProps) => {
@@ -20,7 +24,7 @@ const Text: React.FC<TextProps> = (textProps) => {
   const meshRef = useRef<THREE.Mesh>();
   const [transformControl, setTControl] = useState<TransformControls | undefined>();
   
-  const { text, color, orbit, ...meshProps} = textProps;
+  const { text, color, orbit, updatePosition, updateRotation, idx, mode, ...meshProps} = textProps;
   
   useEffect(() => {
       if (!transformControl && meshRef.current) {
@@ -35,8 +39,18 @@ const Text: React.FC<TextProps> = (textProps) => {
 
       const callback = (event: any) => {
         orbit.current.enabled = !event.value
-      }
+        if(meshRef.current) {
+          const curMode = mode == "translate";
+          const {x, y, z} = meshRef.current[curMode ? "position" : "rotation"];
 
+          if(curMode)
+            updatePosition(idx, x, y, z);
+          else
+            updateRotation(idx, x, y, z);
+        }
+      }
+      
+      transformControl?.setMode(mode);
       
       transformControl?.addEventListener("dragging-changed", callback)
 

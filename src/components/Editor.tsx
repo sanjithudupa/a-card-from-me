@@ -18,6 +18,8 @@ import truncate from "../util/truncate";
 
 import ViewObject from "./Object";
 
+const radToDeg = 180/Math.PI;
+
 extend({ OrbitControls })
 
 const drawerWidth = 240;
@@ -47,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Scene: React.FC<{objects: ARObject[]}> = ({objects}) => {
+const Scene: React.FC<{objects: ARObject[], updatePosition: (key: number, x: number, y: number, z: number) => void; updateRotation: (key: number, x: number, y: number, z: number) => void;}> = ({objects, updatePosition, updateRotation}) => {
     const {
         camera,
         gl: { domElement }
@@ -56,6 +58,24 @@ const Scene: React.FC<{objects: ARObject[]}> = ({objects}) => {
     console.log(objects[0].type)
 
     const orbit = useRef()
+
+    const [mode, setMode] = useState("translate");
+
+    const onDown = (e: KeyboardEvent) => {
+      if(e.key == "r") {
+        setMode("rotate")
+      } else if(e.key == "t") {
+        setMode("translate")
+      }
+    }
+
+    useEffect(() => {
+      window.addEventListener('keydown', onDown); 
+
+      return () => {
+        window.removeEventListener('keydown', onDown);
+      };
+    });
 
     return (
         <>
@@ -79,7 +99,7 @@ const Scene: React.FC<{objects: ARObject[]}> = ({objects}) => {
               {
                 let obj;
                 if(object.type == "text")
-                    obj = <Text text={object.value} color="black" orbit={orbit} key={i} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} position={[object.position.x, object.position.z, object.position.y]}></Text>
+                    obj = <Text text={object.value} color="black" orbit={orbit} updatePosition={updatePosition} updateRotation={updateRotation} key={i} idx={i} mode={mode} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} position={[object.position.x, object.position.z, object.position.y]}></Text>
                 else
                     obj = <Image key={i} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} src={object.value} position={[object.position.x, object.position.z, object.position.y]}></Image>
                 
@@ -150,6 +170,20 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
       setCard(newCard);
     };
 
+    const updatePosition = (key: number, x: number, y: number, z: number) => {
+      let newCard = Object.assign({}, card);
+
+      newCard.objects[key].position = {x: x, y: z, z: y}
+      setCard(newCard);
+    }
+
+    const updateRotation = (key: number, x: number, y: number, z: number) => {
+      let newCard = Object.assign({}, card);
+
+      newCard.objects[key].rotation = {x: x * radToDeg, y: z * radToDeg, z: y * radToDeg}
+      setCard(newCard);
+    }
+
     useEffect(() => {
         // setHeight(window.innerHeight);
 
@@ -204,7 +238,7 @@ const Editor: React.FC<{passedCard: CardSchema}> = ({passedCard}) => {
 
         <div style={{height: window.innerHeight, zIndex: 5}}>
             <Canvas onCreated={state => state.gl.setClearColor("#ebe8e8")}>
-                <Scene objects={card.objects} />
+                <Scene objects={card.objects} updatePosition={updatePosition} updateRotation={updateRotation} />
             </Canvas>
         </div>
 
