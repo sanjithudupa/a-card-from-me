@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react'
 import { Canvas, useThree, extend } from 'react-three-fiber'
 import * as THREE from 'three';
-import { Sky } from "@react-three/drei";
+import { Sky, TransformControls } from "@react-three/drei";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import Image from "./Image";
@@ -15,7 +15,8 @@ import CardSchema from '../schema/card';
 
 import Transition from "./Transition"
 import truncate from "../util/truncate";
-import { convertCompilerOptionsFromJson } from 'typescript';
+
+import ViewObject from "./Object";
 
 extend({ OrbitControls })
 
@@ -53,6 +54,9 @@ const Scene: React.FC<{objects: ARObject[]}> = ({objects}) => {
     } = useThree()
 
     console.log(objects[0].type)
+
+    const orbit = useRef()
+
     return (
         <>
         <Sky  distance={450000} // Camera distance (default=450000)
@@ -61,20 +65,30 @@ const Scene: React.FC<{objects: ARObject[]}> = ({objects}) => {
             azimuth={0.75} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
         />
         <ambientLight />
-        <orbitControls args={[camera, domElement]} />
+        <orbitControls args={[camera, domElement]} ref={orbit} />
         <gridHelper args={[10, 10]} />
         <axesHelper args={[4]} />
         <pointLight position={[10, 10, 10]} />
 
         <Suspense fallback={null}>
             {objects.map((object, i) => {
-                { 
-                    console.log(object.rotation)
-                    return object.type == "text" ?
-                    <Text text={object.value} color="black" key={i} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} position={[object.position.x, object.position.z, object.position.y]}></Text>
-                    :
-                    <Image key={i} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} src={object.value} position={[object.position.x, object.position.z, object.position.y]}></Image>
-                }
+              // <Text text="hi" position={[0, 0, 0]} rotation={[0, 0, 0]} />
+              // const orbit = useRef()
+              // const transform = useRef()
+
+              {
+                let obj;
+                if(object.type == "text")
+                    obj = <Text text={object.value} color="black" orbit={orbit} key={i} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} position={[object.position.x, object.position.z, object.position.y]}></Text>
+                else
+                    obj = <Image key={i} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} src={object.value} position={[object.position.x, object.position.z, object.position.y]}></Image>
+                
+                return (
+                  <>
+                    {obj}
+                  </>
+                )
+              }
             })}
 
             {/* <Text text="Hello" color="red" ></Text>
