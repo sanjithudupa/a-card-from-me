@@ -3,8 +3,7 @@ import { Canvas, useThree, extend } from 'react-three-fiber'
 import * as THREE from 'three';
 import { Sky, TransformControls } from "@react-three/drei";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-//@ts-ignore
-import QRCode from "qrcode-react";
+
 
 import Image from "./CanvasImage";
 import Text from "./CanvasText";
@@ -26,6 +25,7 @@ import sleep from "../util/sleep";
 
 import Constants from "../constants";
 import { delay } from 'lodash';
+import Share from './SharePopup';
 
 const radToDeg = 180/Math.PI;
 
@@ -233,6 +233,7 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
     const savePressed = async() => {
       handleCloseSave();
       handleClickOpenView();
+      saveCard(card);
       setCodeReady(true);
     }
 
@@ -298,6 +299,11 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
 
         setCard(newCard);
     }
+
+    // const shareRef = useRef();
+    // const handlePrint = useReactToPrint({
+    //   content: () => shareRef.current,
+    // });
 
     return (
         <div className={classes.root}>
@@ -600,15 +606,16 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
       {/* View Dialog */}
       <Dialog open={openView} onClose={handleCloseView} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
         <DialogTitle id="form-dialog-title">Print: "<strong>{card.displayName}</strong>"</DialogTitle>
-        <DialogContent style={{textAlign: "center"}}>
-          <QRCode value={"https://" + Constants.HOSTNAME + "/view/" + card.id} size={230} />
-          <br></br>
-          <img src={logo} style={{width: 200}} />
+        <DialogContent>
+          <Share id={card.id} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseView} color="primary">
-            Okay
+            Close
           </Button>
+          {/* <Button onClick={handlePrint} color="primary">
+            Print
+          </Button> */}
         </DialogActions>
       </Dialog>
 
@@ -637,3 +644,7 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
 }
 
 export default Editor;
+
+function useReactToPrint(arg0: { content: () => any; }) {
+  throw new Error('Function not implemented.');
+}
