@@ -601,9 +601,9 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
       <Dialog open={openView} onClose={handleCloseView} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
         <DialogTitle id="form-dialog-title">Print: "<strong>{card.displayName}</strong>"</DialogTitle>
         <DialogContent style={{textAlign: "center"}}>
-          {
-            <QRCode value={"http://" + Constants.HOSTNAME + "/" + card.id} size={230} logo={logo} logoWidth={200} />
-          }
+          <QRCode value={"https://" + Constants.HOSTNAME + "/view/" + card.id} size={230} />
+          <br></br>
+          <img src={logo} style={{width: 200}} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseView} color="primary">

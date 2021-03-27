@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Dashboard from "./pages/Dashboard";
 import Edit from "./pages/Edit";
+import View from "./pages/View";
 
 function App() {
     return (
@@ -19,7 +20,12 @@ function App() {
                     <Redirect to="/"></Redirect>
                 </Route>
 
+                <Route path="/view" exact>
+                    <Redirect to="/"></Redirect>
+                </Route>
+
                 <Route path="/edit/:id" component={Edit}/>
+                <Route path="/view/:id" component={View}/>
             </Router>
         </div>
     )
