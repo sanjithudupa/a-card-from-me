@@ -10,26 +10,24 @@ import View from "./pages/View";
 
 function App() {
     return (
-        <HashRouter basename="/">
-            <div style={{fontFamily: "Nunito"}}>
-                <Router>
-                    <Route path="/" exact component={Home}/>
-                    <Route path="/about" component={About}/>
-                    <Route path="/dashboard" component={Dashboard}/>
+        <div style={{fontFamily: "Nunito"}}>
+            <HashRouter basename="/">
+                <Route path="/" exact component={Home}/>
+                <Route path="/about" component={About}/>
+                <Route path="/dashboard" component={Dashboard}/>
 
-                    <Route path="/edit" exact>
-                        <Redirect to="/"></Redirect>
-                    </Route>
+                <Route path="/edit" exact>
+                    <Redirect to="/"></Redirect>
+                </Route>
 
-                    <Route path="/view" exact>
-                        <Redirect to="/"></Redirect>
-                    </Route>
+                <Route path="/view" exact>
+                    <Redirect to="/"></Redirect>
+                </Route>
 
-                    <Route path="/edit/:id" component={Edit}/>
-                    <Route path="/view/:id" component={View}/>
-                </Router>
-            </div>
-        </HashRouter>
+                <Route path="/edit/:id" component={Edit}/>
+                <Route path="/view/:id" component={View}/>
+            </HashRouter>
+        </div>
     )
 }
 
