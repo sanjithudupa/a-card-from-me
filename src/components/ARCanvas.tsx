@@ -5,14 +5,15 @@ import sanjith from "../assets/sanjithar.png"
 import { MeshProps, useLoader } from 'react-three-fiber'
 
 import Image from "./Image"
-import Text from "./CanvasText"
+import Text from "./Text"
 
 import * as THREE from 'three';
 import Font from "../assets/font.json";
 
 import "../index.css"
+import ARObject from '../schema/arobject';
 
-function ARCanvas() {
+const ARCanvas:React.FC<{objects: ARObject[]}> = ({objects}) => {
     return (
       <ZapparCanvas>
         <ZapparCamera rearCameraMirrorMode="none" />
@@ -25,9 +26,25 @@ function ARCanvas() {
 
           <Suspense fallback={null}>
               
-            <Image src={sanjith} position={[0, 0, -5]}></Image>
-            {/* <gridHelper args={[10, 10]} position={[0, 0, -5]} /> */}
-            {/* <Text position={[0, 0, -4]}></Text> */}
+          {objects.map((object, i) => {
+              // <Text text="hi" position={[0, 0, 0]} rotation={[0, 0, 0]} />
+              // const orbit = useRef()
+              // const transform = useRef()
+
+              {
+                let obj;
+                if(object.type == "text")
+                    obj = <Text key={i} text={object.value} color="black" rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} position={[object.position.x, object.position.z, object.position.y-5]}></Text>
+                else
+                    obj = <Image key={i} rotation={[object.rotation.x * Math.PI/180, object.rotation.z * Math.PI/180, object.rotation.y * Math.PI/180]} src={object.value} position={[object.position.x, object.position.z, object.position.y-5]}></Image>
+                
+                return (
+                  <>
+                    {obj}
+                  </>
+                )
+              }
+            })}
 
 
           </Suspense>

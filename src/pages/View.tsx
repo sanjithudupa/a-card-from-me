@@ -53,22 +53,18 @@ function View() {
 
     return ( 
     <div style={{height: window.innerHeight}}>
-        <ARCanvas />
-    </div>
-        
-    //   <div>
-    //     {
-    //         card.id == "NULL_ID" ?
-    //         // <div style={{height: window.innerHeight, position: "relative"}}>
-    //             <div style={{textAlign: "center"}}>
-    //                 <h1>Loading</h1>
-    //                 <CircularProgress />
-    //             {/* </div>  */}
-    //         </div> :
+         {
+            card.id == "NULL_ID" ?
+            // <div style={{height: window.innerHeight, position: "relative"}}>
+                <div style={{textAlign: "center"}}>
+                    <h1>Loading</h1>
+                    <CircularProgress />
+                {/* </div>  */}
+            </div> :
 
-    //         <ARCanvas></ARCanvas>
-    //     }
-    //   </div>
+            <ARCanvas objects={card.objects}></ARCanvas>
+        }
+      </div>
     );
 }
 
