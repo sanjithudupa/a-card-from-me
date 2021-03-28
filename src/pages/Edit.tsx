@@ -70,6 +70,7 @@ function App() {
     
 
     useEffect(() => {
+      alert('hi')
       firebase.auth().onAuthStateChanged(user => {
         console.log("au")
         if(user) {
@@ -79,7 +80,7 @@ function App() {
             // getData()
         }
         else
-          history.push("/")
+          alert(JSON.stringify(firebase.auth()))
       });
       // getData()
       console.log(card);
