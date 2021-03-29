@@ -1,6 +1,6 @@
 const constants = {
     MAX_OBJECTS: 15,
-    HOSTNAME: "192.168.1.22:4000"
+    HOSTNAME: "sanjithudupa.github.io/a-card-from-me/#"
 }
 
 export default constants;

@@ -70,7 +70,6 @@ function App() {
     
 
     useEffect(() => {
-      alert('hi')
       firebase.auth().onAuthStateChanged(user => {
         console.log("au")
         if(user) {

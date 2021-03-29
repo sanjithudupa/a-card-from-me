@@ -16,6 +16,8 @@ const useStyles = makeStyles({
 
 const ProjectCard:React.FC<{title: string, timestamp: Date, id: string}> = ({title, timestamp, id}) => {
   const classes = useStyles();
+  const history = useHistory();
+  
   return (
     <div style={{padding: 10}}>
       <Card className={classes.root}>
@@ -28,7 +30,7 @@ const ProjectCard:React.FC<{title: string, timestamp: Date, id: string}> = ({tit
           </Typography>
         </CardContent>
         <CardActions>
-          <Button variant="contained" color="default" href={`/edit/${id}`}>
+          <Button variant="contained" color="default" onClick={() => history.push(`/edit/${id}`)}>
             Open
           </Button>
           <Button variant="contained" color="primary">

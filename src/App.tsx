@@ -9,9 +9,17 @@ import Edit from "./pages/Edit";
 import View from "./pages/View";
 
 function App() {
+    let path = localStorage.getItem('path');
+    if(path) {
+        localStorage.removeItem('path');
+        return (
+            <Redirect to={`/${path}`}></Redirect>
+        )
+    }
+
     return (
         <div style={{fontFamily: "Nunito"}}>
-            <BrowserRouter basename={process.env.PUBLIC_URL}>
+            <HashRouter>
                 <Route path="/" exact component={Home}/>
                 <Route path="/about" component={About}/>
                 <Route path="/dashboard" component={Dashboard}/>
@@ -26,7 +34,7 @@ function App() {
 
                 <Route path="/edit/:id" component={Edit}/>
                 <Route path="/view/:id" component={View}/>
-            </BrowserRouter>
+            </HashRouter>
         </div>
     )
 }
