@@ -19,7 +19,7 @@ function App() {
 
     return (
         <div style={{fontFamily: "Nunito"}}>
-            <HashRouter>
+            <BrowserRouter>
                 <Route path="/" exact component={Home}/>
                 <Route path="/about" component={About}/>
                 <Route path="/dashboard" component={Dashboard}/>
@@ -34,7 +34,7 @@ function App() {
 
                 <Route path="/edit/:id" component={Edit}/>
                 <Route path="/view/:id" component={View}/>
-            </HashRouter>
+            </BrowserRouter>
         </div>
     )
 }
