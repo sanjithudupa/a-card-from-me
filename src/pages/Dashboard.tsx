@@ -89,7 +89,7 @@ function CardList() {
   return (
     <div>
       {cards.map(item => 
-        <ProjectCard title={item.displayName} timestamp={item.createdAt!.toDate()} id={item.id}></ProjectCard>
+        <ProjectCard title={item.displayName} timestamp={item.createdAt!.toDate()} id={item.id!}></ProjectCard>
       )}
     </div>
   )
@@ -97,6 +97,7 @@ function CardList() {
 
 function App() {
   const user = (firebase.auth().currentUser);
+  const db = firebase.firestore();
 
   const history = useHistory();
   
@@ -104,6 +105,38 @@ function App() {
     firebase.auth().signOut();
     history.push("/");
     return;
+  }
+
+  const createCard = async () => {
+    if(!user)
+      return history.push("/")
+
+    db.collection("cards").add({
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      displayName: "New Card",
+      objects: [{
+        type: "text",
+        value: "Hello",
+        position: {
+          x: 0,
+          y: 0,
+          z: 0
+        },
+        rotation: {
+          x: 0,
+          y: 0,
+          z: 0
+        }
+      }],
+      owner: user.uid
+    } as CardSchema).then((document) => {
+      const id = document.id;
+      db.collection("cards").doc(id).update({
+        "id": id
+      }).then(() => {
+        history.push(`/edit/${id}`)
+      })
+    })
   }
 
   if(user) {
@@ -138,7 +171,7 @@ function App() {
               </div> */}
 
               <div style={{position: 'fixed', right: 50}}>
-                <Fab color="primary" aria-label="add">
+                <Fab color="primary" aria-label="add" onClick={createCard}>
                   <AddIcon />
                 </Fab>
               </div>

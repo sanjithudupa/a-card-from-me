@@ -607,7 +607,7 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
       <Dialog open={openView} onClose={handleCloseView} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
         <DialogTitle id="form-dialog-title">Print: "<strong>{card.displayName}</strong>"</DialogTitle>
         <DialogContent>
-          <Share id={card.id} />
+          <Share id={card.id!} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseView} color="primary">
