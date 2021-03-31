@@ -1,6 +1,6 @@
 const constants = {
     MAX_OBJECTS: 15,
-    HOSTNAME: "sanjithudupa.github.io/a-card-from-me/#"
+    HOSTNAME: "a-card-from-me.vercel.app"
 }
 
 export default constants;
