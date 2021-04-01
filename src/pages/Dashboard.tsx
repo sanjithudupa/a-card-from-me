@@ -3,7 +3,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
-import { AppBar, Button, Toolbar, Typography, Card, CardActions, CardContent, makeStyles, Fab, ListItemAvatar, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
+import { AppBar, Button, Toolbar, Typography, Card, CardActions, CardContent, makeStyles, Fab, ListItemAvatar, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Snackbar } from '@material-ui/core';
 import { Add as AddIcon } from "@material-ui/icons";
 import { useHistory, Link } from 'react-router-dom';
 import CardSchema from '../schema/card';
@@ -15,9 +15,22 @@ const useStyles = makeStyles({
   }
 });
 
-const ProjectCard:React.FC<{title: string, timestamp: Date, id: string}> = ({title, timestamp, id}) => {
+const ProjectCard:React.FC<{title: string, timestamp: Date, id: string, removeCard: Function}> = ({title, timestamp, id, removeCard}) => {
   const classes = useStyles();
   const history = useHistory();
+
+  const db = firebase.firestore();
+
+  const deleteCard = async() => {
+    await db.collection("cards").doc(id).delete();
+    setSnackbar(true)
+  }
+
+  const [snackbar, setSnackbar] = useState(false);
+
+  const openSnackbar = () => {
+    setSnackbar(true)
+  }
   
   return (
     <div style={{padding: 10}}>
@@ -37,11 +50,17 @@ const ProjectCard:React.FC<{title: string, timestamp: Date, id: string}> = ({tit
           <Button variant="contained" color="primary">
             Share
           </Button>
-          <Button variant="contained" color="secondary">
+          <Button variant="contained" color="secondary" onClick={deleteCard}>
             Delete
           </Button>
         </CardActions>
       </Card>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={snackbar}
+        onClose={() => setSnackbar(false)}
+        message={"Deleted project. Reload for changes to take effect."}
+      />
     </div>
   )
 }
@@ -51,6 +70,17 @@ function CardList() {
   const db = firebase.firestore();
 
   const [cards, setCards] = useState<CardSchema[]>([]);
+
+  const removeCard = (id: string) => {
+    let oldCards = cards;
+    
+    let index = 0;
+    oldCards.forEach(oldCard => {
+      if(oldCard.id == id)
+        oldCards.splice(index, 1);
+      index++
+    })
+  }
 
   function getData() {
     if(user) {
@@ -90,7 +120,7 @@ function CardList() {
   return (
     <div>
       {cards.map(item => 
-        <ProjectCard title={item.displayName} timestamp={item.createdAt!.toDate()} id={item.id!}></ProjectCard>
+        <ProjectCard title={item.displayName} timestamp={item.createdAt!.toDate()} id={item.id!} removeCard={removeCard}></ProjectCard>
       )}
     </div>
   )
