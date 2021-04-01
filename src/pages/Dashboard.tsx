@@ -3,10 +3,11 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
-import { AppBar, Button, Toolbar, Typography, Card, CardActions, CardContent, makeStyles, Fab, ListItemAvatar } from '@material-ui/core';
+import { AppBar, Button, Toolbar, Typography, Card, CardActions, CardContent, makeStyles, Fab, ListItemAvatar, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
 import { Add as AddIcon } from "@material-ui/icons";
 import { useHistory, Link } from 'react-router-dom';
 import CardSchema from '../schema/card';
+import Transition from '../components/Transition';
 
 const useStyles = makeStyles({
   root: {
@@ -107,13 +108,13 @@ function App() {
     return;
   }
 
-  const createCard = async () => {
+  const createCard = async (newName: string) => {
     if(!user)
       return history.push("/")
 
     db.collection("cards").add({
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      displayName: "New Card",
+      displayName: newName,
       objects: [{
         type: "text",
         value: "Hello",
@@ -138,6 +139,20 @@ function App() {
       })
     })
   }
+
+  const [openCreate, setOpenCreate] = useState(false);
+  const handleClickOpenCreate = () => {
+    setOpenCreate(true);
+  };
+
+  const handleCloseCreate = () => {
+    setOpenCreate(false);
+  };
+
+  const [createValue, setCreateValue] = React.useState('');
+  const handleCreateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCreateValue((event.target as HTMLInputElement).value);
+  };
 
   if(user) {
     return (
@@ -171,7 +186,7 @@ function App() {
               </div> */}
 
               <div style={{position: 'fixed', right: 50}}>
-                <Fab color="primary" aria-label="add" onClick={createCard}>
+                <Fab color="primary" aria-label="add" onClick={handleClickOpenCreate}>
                   <AddIcon />
                 </Fab>
               </div>
@@ -187,6 +202,37 @@ function App() {
               </Button>
             </div>
           </div>
+
+          {/* Create dialog */}
+
+          <Dialog open={openCreate} onClose={handleCloseCreate} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
+            <DialogTitle id="form-dialog-title">Create a new Card:</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Choose a name for your new card.
+              </DialogContentText>
+
+              <TextField
+                autoFocus
+                margin="dense"
+                label="Card Name"
+                fullWidth
+                value={createValue}
+                onChange={handleCreateChange}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseCreate} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={() => {
+                createCard(createValue)
+              }} color="primary">
+                Create
+              </Button>
+            </DialogActions>
+          </Dialog>
+
         </div>
       );
   } else {
