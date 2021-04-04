@@ -21,3 +21,5 @@ html, body, #root {
   font-family: 'Nunito';
   src: local('Nunito'), url(./fonts/Nunito-Regular.ttf) format('truetype');
 }
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat:regular,bold,italic&subset=latin,latin-ext');

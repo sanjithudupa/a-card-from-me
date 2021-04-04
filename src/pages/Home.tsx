@@ -1,8 +1,11 @@
 import React, { Suspense, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { Button, Fade, Backdrop, Modal, Fab } from '@material-ui/core';
+import { Button, Fade, Backdrop, Modal, Fab, AppBar, IconButton, Toolbar, Typography } from '@material-ui/core';
+import { Menu as MenuIcon } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 
+import logo from "../assets/logo.png";
+import PerspectiveImage from "../components/PerspectiveImage";
 
 // import withFirebaseAuth from 'react-with-firebase-auth'
 import firebase from 'firebase/app';
@@ -10,6 +13,7 @@ import 'firebase/auth';
 import firebaseConfig from '../firebaseConfig';
 
 import "../index.css";
+import classes from '*.module.css';
 
 const firebaseApp = firebase.initializeApp(firebaseConfig)
 const firebaseAppAuth = firebaseApp.auth();
@@ -32,6 +36,15 @@ const useStyles = makeStyles((theme: Theme) =>
       fontFamily: "Nunito",
       textAlign: "center"
     },
+    root: {
+      flexGrow: 1,
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+    },
+    title: {
+      flexGrow: 1,
+    }
   }),
 );
 
@@ -104,10 +117,33 @@ function TransitionsModal() {
 }
 
 function App() {
+  const classes = useStyles();
+
   return (
-    <div style={{textAlign: "center"}}>
-      <h1>A Card From Me</h1>
-      <TransitionsModal />
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+          ACardFrom.Me
+          </Typography>
+          {
+            firebase.auth().currentUser ?
+            <Button color="inherit">View Dashboard</Button> 
+
+            :
+
+            <Button color="inherit">Login</Button> 
+          }
+        </Toolbar>
+      </AppBar>
+      <div style={{textAlign: "center", fontFamily: "Montserrat"}}>
+        <h2>Your all-in-one <strong>Augmented Reality Card Suite</strong> </h2>
+        <PerspectiveImage src={logo} id="perspective"></PerspectiveImage>
+        <TransitionsModal />
+      </div>
     </div>
   );
 }
