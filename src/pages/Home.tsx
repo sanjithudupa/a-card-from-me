@@ -5,6 +5,12 @@ import { Menu as MenuIcon } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 
 import logo from "../assets/logo.png";
+import create from "../assets/how_it_works/create.png";
+import rotateTranslate from "../assets/how_it_works/rotate_translate.gif";
+import addText from "../assets/how_it_works/addtext.gif";
+import addImage from "../assets/how_it_works/addimage.gif";
+import edit from "../assets/how_it_works/edit.gif";
+
 import PerspectiveImage from "../components/PerspectiveImage";
 
 // import withFirebaseAuth from 'react-with-firebase-auth'
@@ -44,6 +50,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       flexGrow: 1,
+    },
+    kbd: {
+      backgroundColor: "#eee",
+      borderRadius: "3px",
+      border: "1px solid #b4b4b4",
+      boxShadow: "0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset",
+      color: "#333",
+      // display: "inline-block",
+      fontSize: ".85em",
+      fontWeight: 700,
+      // lineHeight: "1",
+      padding: "2px 4px",
+      // whiteSpace: "nowrap"
     }
   }),
 );
@@ -141,8 +160,41 @@ function App() {
       </AppBar>
       <div style={{textAlign: "center", fontFamily: "Montserrat"}}>
         <h2>Your all-in-one <strong>Augmented Reality Card Suite</strong> </h2>
-        <PerspectiveImage src={logo} id="perspective"></PerspectiveImage>
+        <img src={logo} style={{width: "20%"}}/>
+        <p>Augmented Reality Cards - The Future of Celebration</p>
+        
+        <hr style={{width: "50%"}}></hr>
+
+        <h3>How it works:</h3>
+        <PerspectiveImage src={create} oid="perspective"></PerspectiveImage>
+        <br/>
+        <p>Create a card with a nice name.</p>
+        
+        <br></br>
+
+        <PerspectiveImage src={rotateTranslate} oid="perspective2"></PerspectiveImage>
+        <p>Activate Translation controls with <kbd className={classes.kbd}>T</kbd> and Rotation controls with <kbd className={classes.kbd}>R</kbd> </p>
+
+        <br></br>
+
+        <PerspectiveImage src={addText} oid="perspective3"></PerspectiveImage>
+        <p>Add Text Objects to your scene...</p>
+
+        <br></br>
+
+        <PerspectiveImage src={addImage} oid="perspective4"></PerspectiveImage>
+        <p>...But don't forget images too!</p>
+
+        <br></br>
+
+        <PerspectiveImage src={edit} oid="perspective5"></PerspectiveImage>
+        <p>Edit and delete objects as you please.</p>
+        
+        <br/>
+
         <TransitionsModal />
+
+        <br/>
       </div>
     </div>
   );

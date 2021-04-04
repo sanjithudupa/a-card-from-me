@@ -78,8 +78,8 @@ function App() {
           // if(!fetched)
             // getData()
         }
-        else
-          alert(JSON.stringify(firebase.auth()))
+        // else
+        //   alert(JSON.stringify(firebase.auth()))
       });
       // getData()
       console.log(card);

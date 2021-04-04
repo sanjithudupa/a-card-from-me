@@ -381,7 +381,7 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
         <Divider />
         
         <Typography variant="subtitle1" style={{textAlign: "center", margin: 15, textOverflow: "ellipses" }}>
-            Editing: <strong>{truncate(card.objects[selectedIndex].value, 15)}</strong>
+            Editing: <strong>{truncate(card.objects[selectedIndex].value ?? "deleted object", 15)}</strong>
         </Typography>
         
         <Typography variant="caption" style={{textAlign: "center", marginTop: 10}}>

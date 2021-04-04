@@ -5,6 +5,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     perspective: {
         transition: "box-shadow 0.1s, transform 0.1s;",
+        border: "10px black",
 
         '&:hover': {
             boxShadow: "0px 0px 60px rgba(0,0,0, 0.2)",
@@ -15,11 +16,11 @@ const useStyles = makeStyles(() =>
 );
 
 
-const PerspectiveImage:React.FC<{src: string, id:string}> = ({src, id}) => {
+const PerspectiveImage:React.FC<{src: string, oid:string}> = ({src, oid}) => {
     const classes = useStyles();
 
     useEffect(() => {
-        const el = document.getElementById(id);
+        const el = document.getElementById(oid);
         
         if(!el)
             return;
@@ -81,7 +82,7 @@ const PerspectiveImage:React.FC<{src: string, id:string}> = ({src, id}) => {
     }, []);
 
     return (
-        <img src={src} id={id} className={classes.perspective} />
+        <img src={src} id={oid} className={classes.perspective} />
     )
 }
 
