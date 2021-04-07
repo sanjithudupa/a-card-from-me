@@ -276,7 +276,6 @@ function App() {
               <Button variant="contained" color="secondary" onClick={signOut}>
                 Sign Out
               </Button>
-              
             </div>
           </div>
 

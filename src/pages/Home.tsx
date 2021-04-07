@@ -1,6 +1,6 @@
 import React, { Suspense, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { Button, Fade, Backdrop, Modal, Fab, AppBar, IconButton, Toolbar, Typography } from '@material-ui/core';
+import { Button, Fade, Backdrop, Modal, Fab, AppBar, IconButton, Toolbar, Typography, Tooltip } from '@material-ui/core';
 import { Menu as MenuIcon } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 
@@ -143,15 +143,17 @@ function App() {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
+          <Tooltip title="lol this button doesn't do anything">
+            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+              <MenuIcon />
+            </IconButton>
+          </Tooltip>
           <Typography variant="h6" className={classes.title}>
           ACardFrom.Me
           </Typography>
           {
             firebase.auth().currentUser ?
-            <Button color="inherit">View Dashboard</Button> 
+            <Button color="inherit" href="/dashboard">View Dashboard</Button> 
 
             :
 
