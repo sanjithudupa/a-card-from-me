@@ -14,7 +14,7 @@ import logo from "../assets/card_logo.png"
 import ARObject from '../schema/arobject';
 import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction, Snackbar } from '@material-ui/core';
 
-import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon, Edit as EditIcon } from "@material-ui/icons"
+import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon, Edit as EditIcon, Save as SaveIcon, Send as ShareIcon } from "@material-ui/icons"
 import { useHistory } from 'react-router-dom';
 import CardSchema from '../schema/card';
 
@@ -462,9 +462,17 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
 
         <Divider />
 
-        <Button variant="contained" color="secondary" style={{margin: 15}} onClick={handleClickOpenSave}>
-            Save
-        </Button>
+        <div style={{margin: 0, width: "100%", textAlign: "center"}}>
+
+          <IconButton aria-label="exit" onClick={handleClickOpenSave} style={{width: 63, border: "2px solid rgb(0,0,0,0.1)", display: "inline-block" /*backgroundColor: "white", boxShadow: "0 2 0 3px rgba(0,0,0,0.2)"*/, margin: 9}}>
+              <SaveIcon style={{fontSize: 40}} />
+          </IconButton>
+
+          <IconButton aria-label="exit" onClick={handleClickOpenView} style={{width: 63, border: "2px solid rgb(0,0,0,0.1)", display: "inline-block" /*backgroundColor: "white", boxShadow: "0 2 0 3px rgba(0,0,0,0.2)"*/, margin: 9}}>
+              <ShareIcon style={{fontSize: 40}} />
+          </IconButton>
+
+        </div>
       </Drawer>
 
 
