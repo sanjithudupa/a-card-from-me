@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState, useRef } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -8,6 +8,9 @@ import { Add as AddIcon } from "@material-ui/icons";
 import { useHistory, Link } from 'react-router-dom';
 import CardSchema from '../schema/card';
 import Transition from '../components/Transition';
+import Share from "../components/SharePopup";
+
+import ReactToPrint from "react-to-print";
 
 const useStyles = makeStyles({
   root: {
@@ -15,7 +18,7 @@ const useStyles = makeStyles({
   }
 });
 
-const ProjectCard:React.FC<{title: string, timestamp: Date, id: string, removeCard: Function}> = ({title, timestamp, id, removeCard}) => {
+const ProjectCard:React.FC<{title: string, timestamp: Date, id: string, removeCard: Function, onShareClick: Function}> = ({title, timestamp, id, removeCard, onShareClick}) => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -47,7 +50,7 @@ const ProjectCard:React.FC<{title: string, timestamp: Date, id: string, removeCa
           <Button variant="contained" color="default" onClick={() => history.push(`/edit/${id}`)}>
             Open
           </Button>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={() => onShareClick()}>
             Share
           </Button>
           <Button variant="contained" color="secondary" onClick={deleteCard}>
@@ -70,6 +73,18 @@ function CardList() {
   const db = firebase.firestore();
 
   const [cards, setCards] = useState<CardSchema[]>([]);
+  const [selectedCard, setSelectedCard] = useState<CardSchema>();
+
+  const [openView, setOpenView] = React.useState(false);
+  const handleClickOpenView = () => {
+      setOpenView(true);
+  };
+
+  const handleCloseView = () => {
+      setOpenView(false);
+  };
+
+  const printRef = useRef();
 
   const removeCard = (id: string) => {
     let oldCards = cards;
@@ -120,8 +135,39 @@ function CardList() {
   return (
     <div>
       {cards.map(item => 
-        <ProjectCard title={item.displayName} timestamp={item.createdAt!.toDate()} id={item.id!} removeCard={removeCard}></ProjectCard>
+        <ProjectCard title={item.displayName} timestamp={item.createdAt!.toDate()} id={item.id!} removeCard={removeCard} onShareClick={() => {
+          setSelectedCard(item)
+          handleClickOpenView();
+        }}></ProjectCard>
       )}
+
+
+      {/* View Dialog */}
+      <Dialog open={openView} onClose={handleCloseView} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
+        <DialogTitle id="form-dialog-title">Print: "<strong>{selectedCard?.displayName}</strong>"</DialogTitle>
+        <DialogContent>
+          <Share
+            // @ts-ignore
+            ref={printRef} 
+            id={selectedCard?.id!}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseView} color="primary">
+            Close
+          </Button>
+          <ReactToPrint
+            trigger={() => {
+              return(
+                <Button color="primary">
+                  Print
+                </Button>
+              )
+            }}
+            content={() => printRef.current! }
+          />
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }
@@ -230,6 +276,7 @@ function App() {
               <Button variant="contained" color="secondary" onClick={signOut}>
                 Sign Out
               </Button>
+              
             </div>
           </div>
 
