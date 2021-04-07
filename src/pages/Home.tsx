@@ -203,6 +203,17 @@ function App() {
         <TransitionsModal />
 
         <br/>
+
+        <footer style={{backgroundColor: "#489FB5", color: "white"}}>
+          <br/>
+          Copyright <span>&#169;</span> 2021 Sanjith Udupa
+          <br/>
+          What is this? <a href="https://youtube.com/sanjithar" style={{color: "inherit",}}>Explanation</a>
+          <br></br>
+          This project is open source: <a href="https://github.com/sanjithudupa/a-card-from-me" style={{color: "inherit",}}>Contributions/Issues.</a>
+          <br/>
+          <br/>
+        </footer>
       </div>
     </div>
   );
