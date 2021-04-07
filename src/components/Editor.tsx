@@ -14,9 +14,10 @@ import logo from "../assets/card_logo.png"
 import ARObject from '../schema/arobject';
 import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction, Snackbar } from '@material-ui/core';
 
-import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon, Edit as EditIcon } from "@material-ui/icons"
+import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon, Edit as EditIcon, Save as SaveIcon, Send as ShareIcon } from "@material-ui/icons"
 import { useHistory } from 'react-router-dom';
 import CardSchema from '../schema/card';
+import ReactToPrint from "react-to-print";
 
 import Transition from "./Transition"
 import truncate from "../util/truncate";
@@ -305,6 +306,8 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
     //   content: () => shareRef.current,
     // });
 
+    const printRef = useRef();
+
     return (
         <div className={classes.root}>
       <CssBaseline />
@@ -381,7 +384,7 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
         <Divider />
         
         <Typography variant="subtitle1" style={{textAlign: "center", margin: 15, textOverflow: "ellipses" }}>
-            Editing: <strong>{truncate(card.objects[selectedIndex].value, 15)}</strong>
+            Editing: <strong>{truncate(card.objects[selectedIndex].value ?? "deleted object", 15)}</strong>
         </Typography>
         
         <Typography variant="caption" style={{textAlign: "center", marginTop: 10}}>
@@ -462,9 +465,17 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
 
         <Divider />
 
-        <Button variant="contained" color="secondary" style={{margin: 15}} onClick={handleClickOpenSave}>
-            Save
-        </Button>
+        <div style={{margin: 0, width: "100%", textAlign: "center"}}>
+
+          <IconButton aria-label="exit" onClick={handleClickOpenSave} style={{width: 63, border: "2px solid rgb(0,0,0,0.1)", display: "inline-block" /*backgroundColor: "white", boxShadow: "0 2 0 3px rgba(0,0,0,0.2)"*/, margin: 9}}>
+              <SaveIcon style={{fontSize: 40}} />
+          </IconButton>
+
+          <IconButton aria-label="exit" onClick={handleClickOpenView} style={{width: 63, border: "2px solid rgb(0,0,0,0.1)", display: "inline-block" /*backgroundColor: "white", boxShadow: "0 2 0 3px rgba(0,0,0,0.2)"*/, margin: 9}}>
+              <ShareIcon style={{fontSize: 40}} />
+          </IconButton>
+
+        </div>
       </Drawer>
 
 
@@ -607,15 +618,26 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
       <Dialog open={openView} onClose={handleCloseView} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
         <DialogTitle id="form-dialog-title">Print: "<strong>{card.displayName}</strong>"</DialogTitle>
         <DialogContent>
-          <Share id={card.id} />
+          <Share
+            // @ts-ignore
+            ref={printRef} 
+            id={card.id!}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseView} color="primary">
             Close
           </Button>
-          {/* <Button onClick={handlePrint} color="primary">
-            Print
-          </Button> */}
+          <ReactToPrint
+            trigger={() => {
+              return(
+                <Button color="primary">
+                  Print
+                </Button>
+              )
+            }}
+            content={() => printRef.current! }
+          />
         </DialogActions>
       </Dialog>
 
