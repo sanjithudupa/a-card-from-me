@@ -10,6 +10,7 @@ import rotateTranslate from "../assets/how_it_works/rotate_translate.gif";
 import addText from "../assets/how_it_works/addtext.gif";
 import addImage from "../assets/how_it_works/addimage.gif";
 import edit from "../assets/how_it_works/edit.gif";
+import saveAndShare from "../assets/how_it_works/saveandshare.gif";
 
 import PerspectiveImage from "../components/PerspectiveImage";
 
@@ -189,6 +190,11 @@ function App() {
 
         <PerspectiveImage src={edit} oid="perspective5"></PerspectiveImage>
         <p>Edit and delete objects as you please.</p>
+
+        <br></br>
+
+        <PerspectiveImage src={saveAndShare} oid="perspective6"></PerspectiveImage>
+        <p>Save your card and share the QR Code!.</p>
         
         <br/>
 
