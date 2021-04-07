@@ -17,6 +17,7 @@ import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton,
 import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon, Edit as EditIcon, Save as SaveIcon, Send as ShareIcon } from "@material-ui/icons"
 import { useHistory } from 'react-router-dom';
 import CardSchema from '../schema/card';
+import ReactToPrint from "react-to-print";
 
 import Transition from "./Transition"
 import truncate from "../util/truncate";
@@ -304,6 +305,8 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
     // const handlePrint = useReactToPrint({
     //   content: () => shareRef.current,
     // });
+
+    const printRef = useRef();
 
     return (
         <div className={classes.root}>
@@ -615,15 +618,26 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
       <Dialog open={openView} onClose={handleCloseView} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
         <DialogTitle id="form-dialog-title">Print: "<strong>{card.displayName}</strong>"</DialogTitle>
         <DialogContent>
-          <Share id={card.id!} />
+          <Share
+            // @ts-ignore
+            ref={printRef} 
+            id={card.id!}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseView} color="primary">
             Close
           </Button>
-          {/* <Button onClick={handlePrint} color="primary">
-            Print
-          </Button> */}
+          <ReactToPrint
+            trigger={() => {
+              return(
+                <Button color="primary">
+                  Print
+                </Button>
+              )
+            }}
+            content={() => printRef.current! }
+          />
         </DialogActions>
       </Dialog>
 

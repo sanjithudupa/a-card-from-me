@@ -4,14 +4,20 @@ import QRCode from "react-qr-code";
 import logo from "../assets/card_logo.png"
 import Constants from "../constants";
 
-const Share: React.FC<{id: string}> = ({id}) => {
+interface ShareProps {
+    id: string
+}
+
+const Share = React.forwardRef<HTMLDivElement, ShareProps>((props, ref) => {
+    const { id } = props;
+
     return (
-        <div style={{textAlign: "center"}}>
-            <QRCode value={"https://" + Constants.HOSTNAME + "/view/" + id} size={230} fgColor="#0373fc" />
+        <div ref={ref} style={{textAlign: "center"}}>
+            <QRCode value={"https://" + Constants.HOSTNAME + "/view/" + id} size={400} fgColor="#0373fc" />
             <br></br>
-            <img src={logo} style={{width: 200}} />
+            <img src={logo} style={{width: 370}} />
         </div>    
     )
-}
+});
 
 export default Share;
