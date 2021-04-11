@@ -151,13 +151,14 @@ function App() {
           <Typography variant="h6" className={classes.title}>
           ACardFrom.Me
           </Typography>
+          
           {
             firebase.auth().currentUser ?
             <Button color="inherit" href="/dashboard">View Dashboard</Button> 
-
             :
-
-            <Button color="inherit">Login</Button> 
+            <Tooltip title="use the 'get started' button at the bottom">
+              <Button color="inherit">Login</Button> 
+            </Tooltip>
           }
         </Toolbar>
       </AppBar>

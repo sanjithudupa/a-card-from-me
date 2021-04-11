@@ -21,14 +21,6 @@ const theme = createMuiTheme({
 });
 
 function App() {
-    let path = localStorage.getItem('path');
-    if(path) {
-        localStorage.removeItem('path');
-        return (
-            <Redirect to={`/${path}`}></Redirect>
-        )
-    }
-
     return (
         <div style={{fontFamily: "Nunito"}}>
             <MuiThemeProvider theme={theme}>
