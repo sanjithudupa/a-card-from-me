@@ -7,6 +7,7 @@ import About from "./pages/About";
 import Dashboard from "./pages/Dashboard";
 import Edit from "./pages/Edit";
 import View from "./pages/View";
+import ViewDirect from "./pages/ViewDirect";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core";
 
 const theme = createMuiTheme({
@@ -26,6 +27,7 @@ function App() {
             <MuiThemeProvider theme={theme}>
                 <BrowserRouter>
                     <Route path="/" exact component={Home}/>
+                    <Route path="/redirect" component={ViewDirect}/>
                     <Route path="/about" component={About}/>
                     <Route path="/dashboard" component={Dashboard}/>
 
