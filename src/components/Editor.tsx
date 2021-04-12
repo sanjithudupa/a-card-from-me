@@ -622,7 +622,7 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
             // @ts-ignore
             ref={printRef} 
             id={card.id!}
-            logo={logo}
+            logo="https://acardfrom.me/static/media/card_logo.2612bc05.png"
           />
         </DialogContent>
         <DialogActions>
