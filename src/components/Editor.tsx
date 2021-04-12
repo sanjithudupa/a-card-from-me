@@ -139,8 +139,6 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
     const [openCancel, setOpenCancel] = React.useState(false);
     // const [selectedObject, setSelectedObject] = useState(card.objects[0])
 
-    let imageUpload:HTMLInputElement;
-
     const handleClickOpenCancel = () => {
         setOpenCancel(true);
     };
@@ -262,28 +260,42 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
       setSnackbar(true)
     }
 
-    const onUpload = async () => {
-      console.log(imageUpload)
+    const onUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const imageUpload = event.target as HTMLInputElement
+      
       if(!imageUpload?.files)
         return;
       
       const image = imageUpload.files[0];
-      const sendData = new FormData();
-      sendData.append("file", image);
+      console.log(image)
 
-      try {
-        const response = await ((await fetch("https://acardfromme.is-inside.me/upload", {
-          method: "POST",
-          body: sendData,
-          headers: {
-            "key": "QaSDcMb4aW6alRBGGKbKxQh4ugFGBiWg"
-          }
-        })).json())
-
-        alert(response.url)
-      } catch(e) {
-        console.log(`Saving failed ${e}`);
+      if(image.size > 300000)
+        return openSnackbar("Sorry, but images currently cannot exceed 300 KB.")
+      
+      const reader = new FileReader();
+      
+      reader.onloadend = function() {
+          setValue((reader.result! as string).trim())
       }
+
+      reader.readAsDataURL(image);
+
+      // const sendData = new FormData();
+      // sendData.append("file", image);
+
+      // try {
+      //   const response = await ((await fetch("https://acardfromme.is-inside.me/upload", {
+      //     method: "POST",
+      //     body: sendData,
+      //     headers: {
+      //       "key": "QaSDcMb4aW6alRBGGKbKxQh4ugFGBiWg"
+      //     }
+      //   })).json())
+
+      //   alert(response.url)
+      // } catch(e) {
+      //   console.log(`Saving failed ${e}`);
+      // }
     }
 
     useEffect(() => {
@@ -296,7 +308,6 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
         document.body.style.height = "100%"
         document.body.style.margin = "0"
 
-        imageUpload = document.getElementById("imageUpload") as HTMLInputElement
     }, []);
 
     const handleElementClick = (
@@ -551,30 +562,31 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
                 <FormControlLabel value="text" control={<Radio />} label="Text" />
             </RadioGroup>
         </FormControl>
-        <Zoom in={type=="text"}>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Text"
-            fullWidth
-            value={value}
-            onChange={handleValueChange}
-          />
-        </Zoom>
+        <TextField
+          autoFocus
+          margin="dense"
+          label={type=="image" ? "Image Address" : "Text"}
+          fullWidth
+          value={value}
+          onChange={handleValueChange}
+        />
         <Zoom in={type=="image"}>
-          <Button
-            variant="contained"
-            component="label"
-            fullWidth
-          >
-            Upload File
-            <input
-              type="file"
-              onChange={onUpload}
-              id="imageUpload"
-              hidden
-            />
-          </Button>
+          <div style={{textAlign: "center"}}>
+            <p>or...</p>
+            <Button
+              variant="contained"
+              component="label"
+              fullWidth
+            >
+              Upload File
+              <input
+                type="file"
+                onChange={onUpload}
+                id="imageUpload"
+                hidden
+              />
+            </Button>
+          </div>
         </Zoom>
         </DialogContent>
         <DialogActions>
