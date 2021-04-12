@@ -1,15 +1,16 @@
 import React, { MutableRefObject } from "react"
 
 import QRCode from "react-qr-code";
-import logo from "../assets/images/card_logo.png";
+// import logo from "../assets/images/card_logo.png";
 import Constants from "../constants";
 
 interface ShareProps {
-    id: string
+    id: string,
+    logo: string
 }
 
 const Share = React.forwardRef<HTMLDivElement, ShareProps>((props, ref) => {
-    const { id } = props;
+    const { id, logo } = props;
 
     return (
         <div ref={ref} style={{textAlign: "center"}}>

@@ -10,6 +10,8 @@ import CardSchema from '../schema/card';
 import Transition from '../components/Transition';
 import Share from "../components/SharePopup";
 
+import logo from "../assets/images/card_logo.png"
+
 import ReactToPrint from "react-to-print";
 
 const useStyles = makeStyles({
@@ -150,6 +152,7 @@ function CardList() {
             // @ts-ignore
             ref={printRef} 
             id={selectedCard?.id!}
+            logo={logo}
           />
         </DialogContent>
         <DialogActions>

@@ -9,7 +9,7 @@ import Image from "./CanvasImage";
 import Text from "./CanvasText";
 import FlatImage from "./Image";
 
-import logo from "../assets/card_logo.png"
+import logo from "../assets/images/card_logo.png"
 
 import ARObject from '../schema/arobject';
 import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction, Snackbar } from '@material-ui/core';
@@ -622,6 +622,7 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
             // @ts-ignore
             ref={printRef} 
             id={card.id!}
+            logo={logo}
           />
         </DialogContent>
         <DialogActions>
