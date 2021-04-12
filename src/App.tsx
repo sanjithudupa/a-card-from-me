@@ -25,7 +25,7 @@ function App() {
     return (
         <div style={{fontFamily: "Nunito"}}>
             <MuiThemeProvider theme={theme}>
-                <BrowserRouter>
+                <HashRouter>
                     <Route path="/" exact component={Home}/>
                     <Route path="/redirect" component={ViewDirect}/>
                     <Route path="/about" component={About}/>
@@ -41,7 +41,7 @@ function App() {
 
                     <Route path="/edit/:id" component={Edit}/>
                     <Route path="/view/:id" component={View}/>
-                </BrowserRouter>
+                </HashRouter>
             </MuiThemeProvider>
         </div>
     )

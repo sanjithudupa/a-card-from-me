@@ -12,7 +12,7 @@ import FlatImage from "./Image";
 import logo from "../assets/images/card_logo.png"
 
 import ARObject from '../schema/arobject';
-import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction, Snackbar } from '@material-ui/core';
+import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, Zoom, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction, Snackbar } from '@material-ui/core';
 
 import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon, Edit as EditIcon, Save as SaveIcon, Send as ShareIcon } from "@material-ui/icons"
 import { useHistory } from 'react-router-dom';
@@ -139,6 +139,8 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
     const [openCancel, setOpenCancel] = React.useState(false);
     // const [selectedObject, setSelectedObject] = useState(card.objects[0])
 
+    let imageUpload:HTMLInputElement;
+
     const handleClickOpenCancel = () => {
         setOpenCancel(true);
     };
@@ -260,6 +262,30 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
       setSnackbar(true)
     }
 
+    const onUpload = async () => {
+      console.log(imageUpload)
+      if(!imageUpload?.files)
+        return;
+      
+      const image = imageUpload.files[0];
+      const sendData = new FormData();
+      sendData.append("file", image);
+
+      try {
+        const response = await ((await fetch("https://acardfromme.is-inside.me/upload", {
+          method: "POST",
+          body: sendData,
+          headers: {
+            "key": "QaSDcMb4aW6alRBGGKbKxQh4ugFGBiWg"
+          }
+        })).json())
+
+        alert(response.url)
+      } catch(e) {
+        console.log(`Saving failed ${e}`);
+      }
+    }
+
     useEffect(() => {
         // setHeight(window.innerHeight);
 
@@ -269,6 +295,8 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
 
         document.body.style.height = "100%"
         document.body.style.margin = "0"
+
+        imageUpload = document.getElementById("imageUpload") as HTMLInputElement
     }, []);
 
     const handleElementClick = (
@@ -523,15 +551,31 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
                 <FormControlLabel value="text" control={<Radio />} label="Text" />
             </RadioGroup>
         </FormControl>
-
+        <Zoom in={type=="text"}>
           <TextField
             autoFocus
             margin="dense"
-            label="Value"
+            label="Text"
             fullWidth
             value={value}
             onChange={handleValueChange}
           />
+        </Zoom>
+        <Zoom in={type=="image"}>
+          <Button
+            variant="contained"
+            component="label"
+            fullWidth
+          >
+            Upload File
+            <input
+              type="file"
+              onChange={onUpload}
+              id="imageUpload"
+              hidden
+            />
+          </Button>
+        </Zoom>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseAdd} color="primary">
