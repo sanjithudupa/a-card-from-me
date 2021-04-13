@@ -1,6 +1,6 @@
 const config = {
     apiKey: "AIzaSyCLNVdnIjjINeFGl-Ckw88Y7iXT78OTqNo",
-    authDomain: "a-card-from-me.firebaseapp.com",
+    authDomain: "auth.acardfrom.me",
     projectId: "a-card-from-me",
     storageBucket: "a-card-from-me.appspot.com",
     messagingSenderId: "255067960937",
