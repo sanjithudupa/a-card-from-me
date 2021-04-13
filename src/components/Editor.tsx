@@ -12,9 +12,9 @@ import FlatImage from "./Image";
 import logo from "../assets/images/card_logo.png"
 
 import ARObject from '../schema/arobject';
-import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, Zoom, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction, Snackbar } from '@material-ui/core';
+import { AppBar, Button, createStyles, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, Zoom, ListItemText, makeStyles, Modal, Theme, Toolbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ListItemSecondaryAction, Snackbar, Fab } from '@material-ui/core';
 
-import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon, Edit as EditIcon, Save as SaveIcon, Send as ShareIcon } from "@material-ui/icons"
+import { Inbox as InboxIcon, Mail as MailIcon, CancelOutlined as CancelIcon, Image as ImageIcon, TextFields as TextIcon, Edit as EditIcon, Save as SaveIcon, Send as ShareIcon, HelpOutline as HelpIcon } from "@material-ui/icons"
 import { useHistory } from 'react-router-dom';
 import CardSchema from '../schema/card';
 import ReactToPrint from "react-to-print";
@@ -183,6 +183,15 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
 
     const handleCloseView = () => {
         setOpenView(false);
+    };
+    
+    const [openHelp, setOpenHelp] = React.useState(false);
+    const handleClickOpenHelp = () => {
+        setOpenHelp(true);
+    };
+
+    const handleCloseHelp = () => {
+        setOpenHelp(false);
     };
 
     const [renameValue, setRenameValue] = React.useState('');
@@ -516,6 +525,31 @@ const Editor: React.FC<{passedCard: CardSchema, saveCard: (card: CardSchema) => 
 
         </div>
       </Drawer>
+
+
+    {/* Help button */}
+    <Fab color="primary" aria-label="add" onClick={handleClickOpenHelp} style={{position: "absolute", left: 20, bottom: 20}}>
+      <HelpIcon style={{fontSize: 60}} />
+    </Fab>
+
+
+    {/* Help Dialog */}
+    <Dialog open={openHelp} onClose={handleCloseHelp} aria-labelledby="form-dialog-title" TransitionComponent={Transition}>
+      <DialogTitle id="form-dialog-title">Help:</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          To navigate the 3D View, use your mouse. <br />
+          Left-Click and <strong>Drag</strong> to <i>orbit</i> <br />
+          Right-Click and <strong>Drag</strong> to <i>pan</i> <br />
+          Mouse-Wheel to <i>zoom</i> <br />
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseHelp} color="primary">
+          Okay
+        </Button>
+      </DialogActions>
+    </Dialog>
 
 
     {/* close dialog */}
