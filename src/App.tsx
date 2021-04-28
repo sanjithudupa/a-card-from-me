@@ -3,7 +3,8 @@ import "./index.css";
 import {HashRouter, Route, Redirect, BrowserRouter} from "react-router-dom";
 
 import Home from "./pages/Home";
-import About from "./pages/About";
+import About from "./pages/About"
+import ARTest from "./pages/ARTest";
 import Dashboard from "./pages/Dashboard";
 import Edit from "./pages/Edit";
 import View from "./pages/View";
@@ -30,6 +31,8 @@ function App() {
                     <Route path="/redirect" component={ViewDirect}/>
                     <Route path="/about" component={About}/>
                     <Route path="/dashboard" component={Dashboard}/>
+
+                    <Route path="/artest" component={ARTest}/>
 
                     <Route path="/edit" exact>
                         <Redirect to="/"></Redirect>

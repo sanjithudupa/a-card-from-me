@@ -32,6 +32,7 @@ declare module JSX{
         "meshBasicMaterial": any,
         "orbitControls": any, //I added this
         "primitive": any, //I added this
-        "ambientLight": any //I added this
+        "ambientLight": any, //I added thi
+        "perspectiveCamera": any //I added thiss
     }
 }
