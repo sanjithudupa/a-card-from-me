@@ -3,19 +3,18 @@ import { Canvas, Euler, EventHandlers, Layers, Matrix4, Node, NonFunctionKeys, Q
 import { PerspectiveCamera } from 'three';
 import Image from "../components/Image"
 
-function Camera(props: any) {
+const Camera: React.FC<{position:number[], rotation:number[]}> = ({position, rotation}) => {
     const ref = useRef()
     const { setDefaultCamera } = useThree()
+    // Make the camera known to the system
+    useEffect(() => void setDefaultCamera(ref.current!), [])
+    // Update it every frame 
     // @ts-ignore
-    useEffect(() => void setDefaultCamera(ref!.current), [])
-    // @ts-ignore
-    useFrame(() => ref!.current.updateMatrixWorld())
-    return <perspectiveCamera ref={ref} {...props} />
+    useFrame(() => ref.current!.updateMatrixWorld())
+    return <perspectiveCamera ref={ref} position={position} rotation={rotation} />
 }
 
 function App() {
-
-    const [cam, setCam] = useState(0);
 
     useEffect(() => {
         const video = document.getElementById("feed")! as HTMLVideoElement;
@@ -61,8 +60,8 @@ function App() {
 
     return (
         <div style={{overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <Canvas style={{position: "absolute", zIndex: 0}}>
-                {/* <Camera position={[0, 0, cam]} /> */}
+            <Canvas style={{position: "absolute", zIndex: 0}} camera={{position: [0, 0, 10]}}>
+                <Camera position={[0, 0, 10]} rotation={[0, 0, 0]}/>
                 <Image src="https://i.kym-cdn.com/photos/images/facebook/000/352/246/937.png" position={[0, 0, 0]}></Image>
             </Canvas>
             <canvas id="canvas" style={{position: "absolute", zIndex: -1}}></canvas>
